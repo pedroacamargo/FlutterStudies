@@ -59,7 +59,7 @@ class TransactionList extends StatelessWidget {
                         padding: const EdgeInsets.all(6.0),
                         child: FittedBox(
                           child: Text(
-                            "R\$${tr.amount}",
+                            "€${tr.amount.toStringAsFixed(2)}",
                             style: const TextStyle(
                               color: Colors.white,
                             ),
