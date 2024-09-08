@@ -42,81 +42,90 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(children: [
-          TextField(
-            controller: _titleController,
-            onSubmitted: (_) => _submitForm(),
-            decoration: const InputDecoration(labelText: 'Title'),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: 10 +
+                MediaQuery.of(context).viewInsets.bottom, // Keyboard height
           ),
-          TextField(
-            controller: _valueController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onSubmitted: (_) => _submitForm(),
-            decoration: const InputDecoration(labelText: 'Amount (€)'),
-          ),
-          SizedBox(
-            height: 70,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _selectedDate == null
-                        ? 'Nenhuma data selecionada!'
-                        : 'Selected date: ${DateFormat('dd/MM/y').format(_selectedDate!)}',
+          child: Column(children: [
+            TextField(
+              controller: _titleController,
+              onSubmitted: (_) => _submitForm(),
+              decoration: const InputDecoration(labelText: 'Title'),
+            ),
+            TextField(
+              controller: _valueController,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (_) => _submitForm(),
+              decoration: const InputDecoration(labelText: 'Amount (€)'),
+            ),
+            SizedBox(
+              height: 70,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _selectedDate == null
+                          ? 'Nenhuma data selecionada!'
+                          : 'Selected date: ${DateFormat('dd/MM/y').format(_selectedDate!)}',
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  child: TextButton(
-                    style: ButtonStyle(
-                      textStyle: WidgetStateProperty.all(
-                        TextStyle(
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: TextButton(
+                      style: ButtonStyle(
+                        textStyle: WidgetStateProperty.all(
+                          TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      onPressed: _showDatePicker,
+                      child: Text(
+                        "Selecionar data",
+                        style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    onPressed: _showDatePicker,
-                    child: Text(
-                      "Selecionar data",
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                ],
+              ),
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    textStyle: const TextStyle(
+                      color: Colors.purple,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Text(
+                    'Add Transaction',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  textStyle: const TextStyle(
-                    color: Colors.purple,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                child: const Text(
-                  'Add Transaction',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
               ),
-            ),
-          ])
-        ]),
+            ])
+          ]),
+        ),
       ),
     );
   }

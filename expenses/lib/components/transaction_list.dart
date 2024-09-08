@@ -11,26 +11,28 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
-        ? Column(
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                "No Transactions Registered!",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                height: 200,
-                child: Image.asset(
-                  "assets/images/waiting.png",
-                  fit: BoxFit.cover,
+        ? LayoutBuilder(
+            builder: (ctx, constraints) => Column(
+              children: [
+                const SizedBox(
+                  height: 30,
                 ),
-              )
-            ],
+                Text(
+                  "No Transactions Registered!",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  height: constraints.maxHeight * 0.6,
+                  child: Image.asset(
+                    "assets/images/waiting.png",
+                    fit: BoxFit.cover,
+                  ),
+                )
+              ],
+            ),
           )
         : ListView.builder(
             itemCount: transactions.length,
@@ -40,15 +42,31 @@ class TransactionList extends StatelessWidget {
                 elevation: 5,
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                 child: ListTile(
-                  trailing: IconButton(
-                    onPressed: () {
-                      onRemove(tr.id);
-                    },
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 480
+                      ? TextButton.icon(
+                          onPressed: () {
+                            onRemove(tr.id);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          label: const Text(
+                            "Delete",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            onRemove(tr.id);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        ),
                   leading: CircleAvatar(
                     radius: 30,
                     backgroundColor: Theme.of(context).primaryColor,

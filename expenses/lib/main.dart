@@ -5,7 +5,6 @@ import 'package:expenses/components/transaction_form.dart';
 import 'package:expenses/components/transaction_list.dart';
 import 'package:expenses/models/transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 main() => runApp(const ExpensesApp());
 
@@ -64,6 +63,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((t) {
@@ -103,9 +103,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+
     final appBar = AppBar(
       backgroundColor: Theme.of(context).primaryColor,
       actions: [
+        if (isLandscape)
+          IconButton(
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart,
+                color: Colors.white),
+            onPressed: () => {
+              setState(() {
+                _showChart = !_showChart;
+              })
+            },
+          ),
         IconButton(
           icon: const Icon(Icons.add, color: Colors.white),
           onPressed: () => _openTransactionFormModal(context),
@@ -120,9 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    final availableHeight = MediaQuery.of(context).size.height -
+    final availableHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
+        mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appBar,
@@ -130,26 +143,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Show Chart"),
-                Switch(
-                  value: true,
-                  onChanged: (value) {
-                    return;
-                  },
-                ),
-              ],
-            ),
-            SizedBox(
-              height: availableHeight * 0.25,
-              child: Chart(_recentTransactions),
-            ),
-            SizedBox(
-              height: availableHeight * 0.75,
-              child: TransactionList(_transactions, _deleteTransaction),
-            ),
+            if (_showChart || !isLandscape)
+              SizedBox(
+                height: availableHeight * (isLandscape ? 0.9 : 0.25),
+                child: Chart(_recentTransactions),
+              ),
+            if (!_showChart || !isLandscape)
+              SizedBox(
+                height: availableHeight * (isLandscape ? 1 : 0.75),
+                child: TransactionList(_transactions, _deleteTransaction),
+              ),
           ],
         ),
       ),
